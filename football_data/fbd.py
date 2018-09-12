@@ -3,6 +3,10 @@ import os
 import datetime
 
 class footballData:
+    """Note that loading some files may result in decoding errors; this can be
+    checked by accessing the `csv_loading_errors` attribute. Any such errors can
+    usually be fixed by opening the offending csvs in Excel, saving and closing,
+    and then re-instantiating the class."""
     def __init__(self, csv_dir):
         """Args:
             csv_dir (str): filepath location of CSV files downloaded from:
