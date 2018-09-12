@@ -1,0 +1,8 @@
+# Ignore Jupyter dev notebooks:
+*.ipynb
+
+__pycache__
+.DS_Store
+
+# Ignore CSV files in CSV dir:
+*.csv
