@@ -97,7 +97,7 @@ class footballData:
 
     @_basic_cols
     def subset(self, teams=None, seasons=None, divisions=None, min_date=None,
-               max_date=None,**kwargs):
+               max_date=None, **kwargs):
         """Get a subset of the main DataFrame based on the criteria supplied.
 
         Args:
@@ -147,10 +147,10 @@ class footballData:
         Args:
             x (int): number of matches prior to `match_date` to return.
             team (str): name of team.
-            match_date (str): date of the target match in format `DD/MM/YY`.
-                The `x` previous matches AND this this match will be returned.
-                If an exact match date is not found the closest previous match
-                will be used.
+            match_date (str): date of the latest match to get data for, in
+                format `DD/MM/YY`. If the exact match date is not found the
+                closest previous match will be used. The `x` previous matches
+                AND this this match will be returned.
             same_season (bool): if True limit results to the same season as the
                 target match (i.e. don't return matches from previous season).
         """
@@ -162,6 +162,27 @@ class footballData:
         if min_ix<0:
             min_ix = 0
         return df.iloc[min_ix:df.index.max()+1].reset_index(drop=True)
+
+    def head_to_head_results(self, team1, team2, max_date, n_games=5):
+        """Get head to head results between 2 teams.
+
+        Args:
+            team1, team2 (str): teams.
+            match_date (str): date of the latest match to get data for, in
+                format `DD/MM/YY`. If the exact match date is not found the
+                closest previous match will be used.
+            n_games (int): the number of results to return, up to and including
+                the `match_date`.
+        """
+        df = self.subset(teams=[team1, team2], max_date=max_date)
+        df = df[(df["HomeTeam"].isin([team1, team2])) &
+                (df["AwayTeam"].isin([team1, team2]))]
+        df.reset_index(drop=True, inplace=True)
+        min_ix = df.index.max() - n_games + 1
+        if min_ix<0:
+            min_ix=0
+
+        return df.loc[min_ix:df.index.max()].reset_index(drop=True)
 
     @property
     def columns(self):
